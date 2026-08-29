@@ -1,5 +1,13 @@
 ﻿@page "/Power"
+@rendermode InteractiveServer
+
 <h3>Power</h3>
+
+<div class="power">
+	<h4>Число: </h4> <input type="number" step="0.1" min="0" @bind="num" @bind:after="CalculatePow" />
+	<h4>Степень числа: </h4> <input type="number" min="0" @bind="Deg" @bind:after="CalculatePow" /><br><br>
+	<h4>@num ^ @Deg = @pow;</h4>
+</div>
 
 @code {
 
