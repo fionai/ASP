@@ -1,0 +1,33 @@
+﻿@page "/Fibonacci"
+@rendermode InteractiveServer
+
+@using System.Numerics;
+
+<h3>Fibonacci</h3>
+
+<div class="fibonacci">
+	<input type="number" min="2" @bind="Num" @bind:after="CalculateFib" />
+</div>
+<br>
+@* <button class="btn btn-primary" @onclick="Calculate">Show</button> *@
+
+
+@if (fib != null && Num > 0)
+{
+	<div style="word-wrap: break-word; font-size: 16px; line-height: 1.6;">
+		@string.Join(", ", fib)
+	</div>
+}
+
+@code {
+	// int num = 2;
+	// int Num
+	// {
+	// 	get => num;
+	// 	set => num = value < 1 ? 1 : value > 5 ? 5 : value;
+	// }
+	protected override void OnInitialized()
+	{
+		CalculateFib(); // Вызовется автоматически при открытии страницы
+	}
+}
