@@ -1,0 +1,41 @@
+@page "/disciplines"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<MyAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="disciplines/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Disciplines" Pagination="pagination">
+    <PropertyColumn Property="discipline => discipline.discipline_id" Sortable="true"/>
+    <PropertyColumn Property="discipline => discipline.discipline_name" Sortable="true"/>
+
+    <TemplateColumn Context="discipline">
+        <a href="@($"disciplines/edit?discipline_id={discipline.discipline_id}")">Edit</a> |
+        <a href="@($"disciplines/details?discipline_id={discipline.discipline_id}")">Details</a> |
+        @* <a href="@($"disciplines/delete?discipline_id={discipline.discipline_id}")">Delete</a> *@
+    </TemplateColumn>
+</QuickGrid>
+<Paginator State="pagination" />
+
+@code {
+    private MyAcademyContext context = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
