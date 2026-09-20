@@ -7,8 +7,8 @@ namespace MyAcademy.Models
 	public class Discipline
 	{	
 		[Key]
-		//[Column(TypeName = "TINYINT")]
-		public short discipline_id { get; set; }
+		[Column(TypeName = "SMALLINT")]
+		public int discipline_id { get; set; }
 		public string discipline_name { get; set; }
 	}
 }

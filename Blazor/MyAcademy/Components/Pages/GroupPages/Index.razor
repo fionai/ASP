@@ -1,4 +1,4 @@
-@page "/disciplines"
+@page "/groups"
 @rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Components.QuickGrid
@@ -8,18 +8,19 @@
 @inject IDbContextFactory<MyAcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Дисциплины</PageTitle>
+<PageTitle>Группы</PageTitle>
 
-<h1>Дисциплины</h1>
+<h1>Группы</h1>
 
 <div class="controls">
     <p>
-        <a href="disciplines/create" class="btn btn-primary">Добавить</a>
+        <a href="groups/create" class="btn btn-primary">Добавить</a>
     </p>
-    <form action="/disciplines">
-        <input type="search" name="titleFilter"/>
-        <input type="submit" value="Поиск" class="btn btn-primary"  />
+    <form action="/groups">
+        <input type="search" name="TitleFilter" />
+        <input type="submit" value="Поиск" class="btn btn-primary" />    
     </form>
+
     <div>
         <label for="items-per-page"></label>
         <select @bind="pagination.ItemsPerPage" id="items-per-page">
@@ -33,12 +34,12 @@
 
 <div>
     <div class="grid-container">
-        <QuickGrid Class="table" Items="FilteredDisciplines" Pagination="pagination">
-            <PropertyColumn Property="discipline => discipline.discipline_id" Sortable="true" />
-            <PropertyColumn Property="discipline => discipline.discipline_name" Sortable="true" Class="title" />
+        <QuickGrid Class="table" Items="FilteredGroups" Pagination="pagination">
+            <PropertyColumn Property="group => group.group_id" Sortable="true" />
+            <PropertyColumn Property="group => group.group_name" Sortable="true" Class="title" />
 
-            <TemplateColumn Context="discipline">
-                <a href="@($"disciplines/details?discipline_id={discipline.discipline_id}")">Details</a> |
+            <TemplateColumn Context="group">
+                <a href="@($"groups/details?group_id={group.group_id}")">Details</a> |
             </TemplateColumn>
         </QuickGrid>
     </div>
@@ -51,8 +52,8 @@
 
     [SupplyParameterFromQuery]
     string TitleFilter { get; set; }
-    IQueryable<Discipline> FilteredDisciplines =>
-    context.Disciplines.Where(d => d.discipline_name.Contains(TitleFilter ?? string.Empty));
+    IQueryable<Group> FilteredGroups =>
+    context.Groups.Where(d => d.group_name.Contains(TitleFilter ?? string.Empty));
 
     protected override void OnInitialized()
     {

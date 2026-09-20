@@ -1,0 +1,163 @@
+@* @page "/students"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<MyAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Студенты</PageTitle>
+
+<h1>Студенты</h1>
+
+<div class="controls">
+    <p>
+        <a href="students/create" class="btn btn-primary">Добавить</a>
+    </p>
+    <form action="/students">
+        <input type="search" name="TitleFiler"/>
+        <input type="submit" value="Поиск" class="btn btn-primary" />
+    </form>
+
+    <div>
+        <label for="items-per-page"></label>
+        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="13">13</option>
+        </select>
+    </div>
+</div>
+
+<div>
+    <div class="grid-container">
+        <QuickGrid Class="table" Items="FilteredStudents" Pagination="pagination">
+            <PropertyColumn Property="student => student.stud_id" Sortable="true" />
+            <PropertyColumn Property="student => student.last_name" Sortable="true" Class="title" />
+            <PropertyColumn Property="student => student.first_name" Sortable="true" Class="title" />
+            <PropertyColumn Property="student => student.middle_name" Sortable="true" Class="title" />
+            <PropertyColumn Property="student => student.group" Sortable="true" Class="title" />
+
+            <TemplateColumn Context="student">
+                <a href="@($"students/details?stud_id={student.stud_id}")">Details</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination" />
+</div>
+
+@code {
+    private MyAcademyContext context = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    [SupplyParameterFromQuery]
+    string TitleFilter { get; set; }
+    IQueryable<Student> FilteredStudents =>
+    context.Students.Where(d => d.last_name.Contains(TitleFilter ?? string.Empty));
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
+ *@
+
+@page "/students"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<MyAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Студенты</PageTitle>
+
+<h1>Студенты</h1>
+
+<div class="controls">
+    <p>
+        <a href="students/create" class="btn btn-primary">Добавить</a>
+    </p>
+
+    <form action="/students">
+        <input type="search" name="TitleFilter" value="@TitleFilter" />
+        <input type="submit" value="Поиск" class="btn btn-primary" />
+    </form>
+
+    <div>
+        <label for="items-per-page"></label>
+        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="13">13</option>
+        </select>
+    </div>
+</div>
+
+<div>
+    <div class="grid-container">
+        @if (context != null)
+        {
+            <QuickGrid Class="table" Items="FilteredStudents" Pagination="pagination">
+                <PropertyColumn Property="student => student.stud_id" Sortable="true" />
+                <PropertyColumn Property="student => student.last_name" Sortable="true" Class="title" />
+                <PropertyColumn Property="student => student.first_name" Sortable="true" Class="title" />
+                <PropertyColumn Property="student => student.middle_name" Sortable="true" Class="title" />
+
+                @* Безопасное отображение группы: если объект group равен null, приложение не упадет *@
+                <TemplateColumn Title="group" Sortable="true" Class="title">
+                    @context?.stud_id
+                </TemplateColumn>
+
+                <TemplateColumn Context="student">
+                    <a href="@($"students/details?stud_id={student.stud_id}")">Details</a>
+                </TemplateColumn>
+            </QuickGrid>
+        }
+        else
+        {
+            <p>Загрузка данных...</p>
+        }
+    </div>
+    <Paginator State="pagination" />
+</div>
+
+@code {
+    private MyAcademyContext context = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    [SupplyParameterFromQuery]
+    public string? TitleFilter { get; set; }
+
+    // Исправленная логика фильтрации: если в поиске пусто — метод Where не вызывается
+    private IQueryable<Student> FilteredStudents
+    {
+        get
+        {
+            if (context == null)
+                return Enumerable.Empty<Student>().AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(TitleFilter))
+            {
+                return context.Students;
+            }
+
+            return context.Students.Where(d => d.last_name != null && d.last_name.Contains(TitleFilter));
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

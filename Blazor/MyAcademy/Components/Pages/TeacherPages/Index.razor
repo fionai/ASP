@@ -1,0 +1,133 @@
+@* @page "/teachers"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<MyAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="teachers/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Teachers">
+    <PropertyColumn Property="teacher => teacher.teacher_id" />
+    <PropertyColumn Property="teacher => teacher.last_name" />
+    <PropertyColumn Property="teacher => teacher.first_name" />
+    <PropertyColumn Property="teacher => teacher.middle_name" />
+
+    <TemplateColumn Context="teacher">
+        <a href="@($"teachers/details?teacher_id={teacher.teacher_id}")">Details</a> 
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private MyAcademyContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
+ *@
+
+
+@page "/teachers"
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<MyAcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Студенты</PageTitle>
+
+<h1>Студенты</h1>
+
+<div class="controls">
+    <p>
+        <a href="teachers/create" class="btn btn-primary">Добавить</a>
+    </p>
+
+    <form action="/teachers">
+        <input type="search" name="TitleFilter" value="@TitleFilter" />
+        <input type="submit" value="Поиск" class="btn btn-primary" />
+    </form>
+
+    <div>
+        <label for="items-per-page"></label>
+        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="8">8</option>
+            <option value="13">13</option>
+        </select>
+    </div>
+</div>
+
+<div>
+    <div class="grid-container">
+        @if (context != null)
+        {
+            <QuickGrid Class="table" Items="FilteredTeachers" Pagination="pagination">
+                <PropertyColumn Property="teacher => teacher.teacher_id" Sortable="true" />
+                <PropertyColumn Property="teacher => teacher.last_name" Sortable="true" Class="title" />
+                <PropertyColumn Property="teacher => teacher.first_name" Sortable="true" Class="title" />
+                <PropertyColumn Property="teacher => teacher.middle_name" Sortable="true" Class="title" />
+
+            
+                <TemplateColumn Title="group" Sortable="true" Class="title">
+                    @context?.teacher_id
+                </TemplateColumn>
+
+                <TemplateColumn Context="teacher">
+                    <a href="@($"teachers/details?teacher_id={teacher.teacher_id}")">Details</a>
+                </TemplateColumn>
+            </QuickGrid>
+        }
+        else
+        {
+            <p>Загрузка данных...</p>
+        }
+    </div>
+    <Paginator State="pagination" />
+</div>
+
+@code {
+    private MyAcademyContext context = default!;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+
+    [SupplyParameterFromQuery]
+    public string? TitleFilter { get; set; }
+
+    private IQueryable<Teacher> FilteredTeachers
+    {
+        get
+        {
+            if (context == null)
+                return Enumerable.Empty<Teacher>().AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(TitleFilter))
+            {
+                return context.Teachers;
+            }
+
+            return context.Teachers.Where(d => d.last_name != null && d.last_name.Contains(TitleFilter));
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
