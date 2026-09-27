@@ -116,7 +116,7 @@
 
 						<!-- Блок вывода результата -->
 						<TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Результат:" FontWeight="SemiBold" Margin="0,10,0,5" FontSize="20"/>
-						<TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DateResultText" Text="Выберите даты" FontSize="20" Foreground="#0078D4" TextWrapping="Wrap"/>
+						<TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DateResultText" Text=" " FontSize="20" Foreground="#0078D4" TextWrapping="Wrap"/>
 					</Grid>
 				</TabItem>
 

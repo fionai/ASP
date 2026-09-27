@@ -52,9 +52,6 @@ namespace TC
 				DateTime start = StartDatePicker.SelectedDate.Value;
 				DateTime end = EndDatePicker.SelectedDate.Value;
 
-				//сначала проверяем, что обе даты заполнены
-
-
 				DateTime tmp;
 				if (end < start)
 				{
@@ -87,6 +84,10 @@ namespace TC
 				{
 					DateResultText.Text = $"{totalDays} дней \n({years} лет, {months} мес, {days} дн.)";
 				}
+			}
+			else
+			{
+				DateResultText.Text = "";
 			}
 		}
 
