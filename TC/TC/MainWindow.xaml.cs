@@ -105,38 +105,6 @@ namespace TC
 			}
 		}
 
-		//// 4. Операция на Вкладке 3: Конвертер единиц времени
-		//private void ConvertTime(object sender, SelectionChangedEventArgs e) => DoConversion();
-		//private void ConvertTime(object sender, TextChangedEventArgs e) => DoConversion();
-
-		//private void DoConversion()
-		//{
-		//	if (InputValue == null || FromUnit == null || ToUnit == null || ConvertResultText == null) return;
-
-		//	// Проверяем, что введено именно число
-		//	if (!double.TryParse(InputValue.Text, out double amount))
-		//	{
-		//		ConvertResultText.Text = "Введите число";
-		//		return;
-		//	}
-
-		//	var fromItem = FromUnit.SelectedItem as ComboBoxItem;
-		//	var toItem = ToUnit.SelectedItem as ComboBoxItem;
-
-		//	if (fromItem != null && toItem != null)
-		//	{
-		//		// Считываем коэффициенты перевода из свойства Tag элементов XAML
-		//		double fromInSeconds = Convert.ToDouble(fromItem.Tag);
-		//		double toInSeconds = Convert.ToDouble(toItem.Tag);
-
-		//		// Рассчитываем результат перевода
-		//		double result = (amount * fromInSeconds) / toInSeconds;
-
-		//		// Отображаем результат (формат "G" скрывает лишние нули в конце)
-		//		ConvertResultText.Text = result.ToString("G");
-		//	}
-		//}
-
 		// 4. Операция на Вкладке 3: Конвертер единиц времени
 		private void ConvertTime(object sender, SelectionChangedEventArgs e) => DoConversion();
 		private void ConvertTime(object sender, TextChangedEventArgs e) => DoConversion();
@@ -218,9 +186,33 @@ namespace TC
 			double seconds = remainder % secondsInMinute;
 
 			// Выводим готовую строку формата
-			FullFormattedResult.Text = string.Format("Лет {0:N0} Месяцев {1} Дней {2} Часов {3} Минут {4} Секунд {5}",
+			FullFormattedResult.Text = string.Format("{0:N0}\u00A0Лет {1}\u00A0Месяцев {2}\u00A0Дней {3}\u00A0Часов {4}\u00A0Минут {5}\u00A0Секунд",
 				years, months, days, hours, minutes, seconds);
 		}
+
+		private void CopyResult_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is Button copyButton && copyButton.Tag is TextBlock targetTextBlock)
+			{
+				string textToCopy = targetTextBlock.Text;
+
+				if (!string.IsNullOrEmpty(textToCopy) && textToCopy != "0")
+				{
+					// Удаляем разделительные пробелы, чтобы скопировать чистое число
+					string cleanNumber = textToCopy.Replace(" ", "").Replace("\u00A0", "");
+
+					try
+					{
+						Clipboard.SetText(cleanNumber);
+					}
+					catch (System.Runtime.InteropServices.ExternalException)
+					{
+						// Защита на случай, если буфер обмена временно заблокирован другой программой
+					}
+				}
+			}
+		}
+
 
 		// Метод сброса полей в дефолтное состояние
 		private void ResetConverterFields()
@@ -231,7 +223,7 @@ namespace TC
 			ResultWeeks.Text = "0";
 			ResultMonths.Text = "0";
 			ResultYears.Text = "0";
-			FullFormattedResult.Text = "Лет 0 Месяцев 0 Дней 0 Часов 0 Минут 0 Секунд 0";
+			FullFormattedResult.Text = "0\u00A0Лет 0\u00A0Месяцев 0\u00A0Дней 0\u00A0Часов 0\u00A0Минут 0\u00A0Секунд";
 		}
 
 		private void StartDatePicker_Loaded(object sender, RoutedEventArgs e)
