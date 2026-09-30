@@ -123,34 +123,99 @@
 
 				<!-- Вкладка 3: Конвертер -->
 				<TabItem>
-					<StackPanel>
+					<Grid>
+						<Grid.RowDefinitions>
+							<!-- Верхняя строка под заголовок -->
+							<RowDefinition Height="Auto"/>
+							<!-- Нижняя строка под основной контент (сетка) -->
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
 
+						<!-- Сверху заголовок -->
+						<TextBlock Grid.Row="0" Text="Конвертер времени" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-							<TextBlock Text="Конвертер" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,20"/>
+						<!-- Сетка основного контента: 45% | 10% | 45% -->
+						<Grid Grid.Row="1">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="0.45*"/>
+								<ColumnDefinition Width="0.10*"/>
+								<ColumnDefinition Width="0.45*"/>
+							</Grid.ColumnDefinitions>
 
-						<TextBlock Text="Сколько конвертировать:" Margin="0,0,0,5"/>
-						<TextBox x:Name="InputValue" Margin="0,0,0,15" Padding="5" TextChanged="ConvertTime"/>
+							<!-- ================= ЛЕВАЯ ЧАСТЬ (45%) ================= -->
+							<StackPanel Grid.Column="0">
+								<TextBlock Text="Выберите единицу измерения:" Margin="0,0,0,5" FontSize="14"/>
+								<!-- Выпадающий список с вариантами -->
+								<ComboBox x:Name="FromUnit" SelectedIndex="0" Margin="0,0,0,15" Padding="5" FontSize="16" SelectionChanged="ConvertTime">
+									<ComboBoxItem Content="Секунды"/>
+									<ComboBoxItem Content="Минуты"/>
+									<ComboBoxItem Content="Часы"/>
+									<ComboBoxItem Content="Недели"/>
+									<ComboBoxItem Content="Месяцы"/>
+									<ComboBoxItem Content="Годы"/>
+								</ComboBox>
 
-						<TextBlock Text="Из какой единицы:" Margin="0,0,0,5"/>
-						<ComboBox x:Name="FromUnit" Margin="0,0,0,15" Padding="5" SelectionChanged="ConvertTime">
-							<ComboBoxItem Content="Секунды" Tag="1"/>
-							<ComboBoxItem Content="Минуты" Tag="60"/>
-							<ComboBoxItem Content="Часы" Tag="3600"/>
-							<ComboBoxItem Content="Сутки" Tag="86400"/>
-						</ComboBox>
+								<TextBlock Text="Введите значение (большое число):" Margin="0,0,0,5" FontSize="14"/>
+								<!-- Поле ввода для большого числа -->
+								<TextBox x:Name="InputValue" Padding="8" FontSize="18" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="ConvertTime"/>
+							</StackPanel>
 
-						<TextBlock Text="В какую единицу:" Margin="0,0,0,5"/>
-						<ComboBox x:Name="ToUnit" Margin="0,0,0,15" Padding="5" SelectionChanged="ConvertTime">
-							<ComboBoxItem Content="Секунды" Tag="1"/>
-							<ComboBoxItem Content="Минуты" Tag="60"/>
-							<ComboBoxItem Content="Часы" Tag="3600"/>
-							<ComboBoxItem Content="Сутки" Tag="86400"/>
-						</ComboBox>
+							<!-- ================= СЕРЕДИНА (10%) ================= -->
+							<!-- Оставляем пустой по вашему запросу -->
+							<Grid Grid.Column="1"/>
 
-						<TextBlock Text="Результат:" FontWeight="SemiBold" Margin="0,10,0,5"/>
-						<TextBlock x:Name="ConvertResultText" Text="0" FontSize="22" FontWeight="Bold" Foreground="#0078D4"/>
-					</StackPanel>
+							<!-- ================= ПРАВАЯ ЧАСТЬ (45%) ================= -->
+							<StackPanel Grid.Column="2">
+								<!-- Сетка для выравнивания надписей и результатов на одном уровне -->
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" SharedSizeGroup="LabelGroup"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+										<RowDefinition Height="Auto" MinHeight="35"/>
+									</Grid.RowDefinitions>
+
+									<!-- Секунды -->
+									<TextBlock Grid.Row="0" Grid.Column="0" Text="Секунды:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="0" Grid.Column="1" x:Name="ResultSeconds" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+
+									<!-- Минуты -->
+									<TextBlock Grid.Row="1" Grid.Column="0" Text="Минуты:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="1" Grid.Column="1" x:Name="ResultMinutes" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+
+									<!-- Часы -->
+									<TextBlock Grid.Row="2" Grid.Column="0" Text="Часы:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="2" Grid.Column="1" x:Name="ResultHours" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+
+									<!-- Недели -->
+									<TextBlock Grid.Row="3" Grid.Column="0" Text="Недели:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="3" Grid.Column="1" x:Name="ResultWeeks" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+
+									<!-- Месяцы -->
+									<TextBlock Grid.Row="4" Grid.Column="0" Text="Месяцы:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="4" Grid.Column="1" x:Name="ResultMonths" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+
+									<!-- Годы -->
+									<TextBlock Grid.Row="5" Grid.Column="0" Text="Годы:" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+									<TextBlock Grid.Row="5" Grid.Column="1" x:Name="ResultYears" Text="0" FontSize="16" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center"/>
+								</Grid>
+
+								<Separator Margin="0,15,0,15" Background="#CCCCCC"/>
+
+								<!-- Строка развернутого формата -->
+								<TextBlock Text="Полный формат времени:" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
+								<TextBlock x:Name="FullFormattedResult" Text="Лет 0 Месяцев 0 Дней 0 Часов 0 Минут 0 Секунд 0" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="#2B579A"/>
+							</StackPanel>
+						</Grid>
+					</Grid>
 				</TabItem>
+
 
 				<!-- Вкладка 4: Пустая -->
 				<TabItem>
