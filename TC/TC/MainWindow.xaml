@@ -27,10 +27,10 @@
 			<Button Grid.Column="0" x:Name="HamburgerButton" Content="☰" FontSize="20" Width="45" Height="45" Background="Transparent" BorderThickness="0" Click="MenuButton_Click"/>
 
 			<!-- 2. Выпадающее дублирующее меню (изначально скрыто, всплывает под кнопкой при нажатии) -->
-			<Popup x:Name="MenuPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" Placement="Bottom" StaysOpen="False">
+			<Popup x:Name="MenuPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" Placement="Bottom" StaysOpen="True">
 				<Border Background="#E6E6E6" BorderBrush="Gray" BorderThickness="1" Width="160">
 					<ListBox x:Name="MenuListBox" Background="Transparent" BorderThickness="0" SelectionChanged="MenuListBox_SelectionChanged">
-						<ListBoxItem Content="📅 Дата - Дата" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+						<ListBoxItem Content="📅 Вычислить разность" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 						<ListBoxItem Content="⏳ Вкладка 2" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 						<ListBoxItem Content="🔄 Конвертер" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 						<ListBoxItem Content="📁 Вкладка 4" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
@@ -82,36 +82,30 @@
 			
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="0.5*"/>
-							<ColumnDefinition Width="0.5*"/>
+							<ColumnDefinition Width="0.45*"/>
+							<ColumnDefinition Width="0.1*"/>
+							<ColumnDefinition Width="0.45*"/>
 						</Grid.ColumnDefinitions>
 
 						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<!-- Заголовок -->
-							<RowDefinition Height="Auto"/>
-							<!-- Надпись 1 -->
-							<RowDefinition Height="Auto"/>
-							<!-- Календарь 1 -->
-							<RowDefinition Height="Auto"/>
-							<!-- Надпись 2 -->
-							<RowDefinition Height="Auto"/>
-							<!-- Календарь 2 -->
-							<RowDefinition Height="Auto"/>
-							<!-- Надпись Результат -->
-							<RowDefinition Height="Auto"/>
-							<!-- Текст Результата -->
+							<RowDefinition Height="Auto"/>	<!-- Заголовок -->
+							<RowDefinition Height="Auto"/>	<!-- Надпись 1 -->
+							<RowDefinition Height="Auto"/>	<!-- Календарь 1 -->
+							<RowDefinition Height="Auto"/>	<!-- Надпись 2 -->
+							<RowDefinition Height="Auto"/>	<!-- Календарь 2 -->
+							<RowDefinition Height="Auto"/>	<!-- Надпись Результат -->
+							<RowDefinition Height="Auto"/>	<!-- Результат -->
 						</Grid.RowDefinitions>
 
 						<!-- Заголовок вкладки (растянут на обе колонки) -->
-						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Вычисление разницы между датами" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,20"/>
+						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Вычисление разницы между датами" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
 						<!-- Элементы первой даты (строго в левой колонке) -->
-						<TextBlock Grid.Row="1" Grid.Column="0" Text="Дата 1:" Margin="0,0,0,5" FontSize="20"/>
+						<TextBlock Grid.Row="1" Grid.Column="0" Text="Дата" Margin="0,0,0,5" FontSize="20"/>
 						<DatePicker Grid.Row="2" Grid.Column="0" x:Name="StartDatePicker"  Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" />
 
 						<!-- Элементы второй даты (строго в левой колонке) -->
-						<TextBlock Grid.Row="3" Grid.Column="0" Text="Дата 2:" Margin="0,0,0,5" FontSize="20"/>
+						<TextBlock Grid.Row="3" Grid.Column="0" Text="Дата" Margin="0,0,0,5" FontSize="20"/>
 						<DatePicker Grid.Row="4" Grid.Column="0" x:Name="EndDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20"/>
 
 						<!-- Блок вывода результата -->
@@ -130,7 +124,9 @@
 				<!-- Вкладка 3: Конвертер -->
 				<TabItem>
 					<StackPanel>
-						<TextBlock Text="Конвертер" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+
+							<TextBlock Text="Конвертер" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
 						<TextBlock Text="Сколько конвертировать:" Margin="0,0,0,5"/>
 						<TextBox x:Name="InputValue" Margin="0,0,0,15" Padding="5" TextChanged="ConvertTime"/>

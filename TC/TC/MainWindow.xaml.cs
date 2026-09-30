@@ -23,11 +23,27 @@ namespace TC
 		{
 			if (MenuPopup != null)
 			{
-				// Открываем всплывающее окно меню
-				MenuPopup.IsOpen = true;
+				MenuPopup.IsOpen = !MenuPopup.IsOpen;
+
+				if (MenuPopup.IsOpen)
+				{
+					this.PreviewMouseDown += CloseMenuOnOutsideClick;
+				}
+				else
+				{
+					this.PreviewMouseDown -= CloseMenuOnOutsideClick;
+				}
 			}
 		}
 
+		private void CloseMenuOnOutsideClick (object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (MenuPopup != null && !HamburgerButton.IsMouseOver && !MenuPopup.IsMouseOver)
+			{
+				MenuPopup.IsOpen = false;
+				this.PreviewMouseDown -= CloseMenuOnOutsideClick;
+			}
+		}
 		// 2. Клик по пункту из выпадающего списка переключает вкладку и СВОРЫВАЕТ меню обратно
 		private void MenuListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -132,5 +148,6 @@ namespace TC
 					datePickerTextBox.Text = string.Empty;
 
 		}
+
 	}
 }
