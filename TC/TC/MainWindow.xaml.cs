@@ -428,13 +428,18 @@ namespace TC
 		// Блокируем нажатие любых клавиш, кроме цифр от 0 до 9
 		private void InputValue_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
 		{
-			// Проверяем, является ли вводимый символ цифрой
-			if (!char.IsDigit(e.Text, e.Text.Length - 1))
+			if (e.Text.Length > 0 && !char.IsDigit(e.Text, e.Text.Length - 1))
 			{
-				// Если это буква или знак — отменяем ввод (символ не появится в поле)
-				e.Handled = true;
+				e.Handled = true; // Блокируем буквы и знаки
 			}
 		}
 
+		private void InputValue_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter)
+			{
+				e.Handled = true; // Блокируем перенос строки
+			}
+		}
 	}
 }

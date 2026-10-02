@@ -277,7 +277,7 @@
 										<Setter Property="BorderThickness" Value="1"/>
 										<Setter Property="Foreground" Value="#5B4F23"/>
 										<Setter Property="Cursor" Value="Hand"/>
-										<Setter Property="ToolTip" Value="Copy"/>
+										<Setter Property="ToolTip" Value="Копировать"/>
 										<Style.Triggers>
 											<Trigger Property="IsMouseOver" Value="True">
 												<Setter Property="Background" Value="#E9D994"/>
@@ -347,105 +347,177 @@
 	</Grid>
 </TabItem>
 
-				<!-- Вкладка 4: Сумма/разность интервалов -->
+				<!-- Вкладка 4: Сумма/разность интервалов (Набор 4) -->
 				<TabItem>
-					<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<!-- Заголовок -->
-								<RowDefinition Height="*" />
-								<!-- Контент -->
-							</Grid.RowDefinitions>
+					<Grid Background="#F3EFE9">
+						<!-- Приглушённо-оранжевая карточка -->
+						<Border Background="#F5B66C" CornerRadius="8" Padding="15" Margin="5">
+							<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+								<Grid KeyboardNavigation.TabNavigation="Cycle">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
 
-							<!-- Описание стилей кнопок -->
-							<Grid.Resources>
-								<Style x:Key="IntervalButtonStyle" TargetType="Button">
-									<Setter Property="FontSize" Value="14"/>
-									<Setter Property="Padding" Value="12,5"/>
-									<Setter Property="Background" Value="#F5F5F5"/>
-									<Setter Property="BorderBrush" Value="#CCCCCC"/>
-									<Setter Property="BorderThickness" Value="1"/>
-									<Setter Property="Cursor" Value="Hand"/>
-									<Setter Property="IsTabStop" Value="False"/>
-									<!-- Исключаем обычные кнопки из перехода по Tab -->
-								</Style>
+									<!-- Описание стилей кнопок под Набор 4 с инверсией цвета -->
+									<Grid.Resources>
+										<Style x:Key="IntervalButtonStyle" TargetType="Button">
+											<Setter Property="FontSize" Value="14"/>
+											<Setter Property="Cursor" Value="Hand"/>
+											<Setter Property="IsTabStop" Value="False"/>
+											<!-- Полностью убираем системный голубой стиль при наведении через ControlTemplate -->
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="Button">
+														<Border x:Name="ButtonBorder" 
+												Background="#5C360C" 
+												BorderBrush="#5C360C" 
+												BorderThickness="1" 
+												Padding="12,5" 
+												CornerRadius="2">
+															<ContentPresenter x:Name="ButtonContent" 
+															  HorizontalAlignment="Center" 
+															  VerticalAlignment="Center" 
+															  TextBlock.Foreground="#F5B66C"/>
+														</Border>
+														<ControlTemplate.Triggers>
+															<!-- Эффект при наведении: меняем цвет фона и текста местами -->
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter TargetName="ButtonBorder" Property="Background" Value="#F5B66C"/>
+																<Setter TargetName="ButtonContent" Property="TextBlock.Foreground" Value="#5C360C"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
 
-								<Style x:Key="MathButtonStyle" TargetType="Button" BasedOn="{StaticResource IntervalButtonStyle}">
-									<Setter Property="FontSize" Value="24"/>
-									<Setter Property="FontWeight" Value="SemiBold"/>
-									<Setter Property="Width" Value="60"/>
-									<Setter Property="Height" Value="45"/>
-									<Setter Property="IsTabStop" Value="True"/>
-									<!-- Разрешаем Tab для + и - -->
-								</Style>
+										<Style x:Key="MathButtonStyle" TargetType="Button" BasedOn="{StaticResource IntervalButtonStyle}">
+											<Setter Property="IsTabStop" Value="True"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="Button">
+														<Border x:Name="ButtonBorder" 
+												Background="#5C360C" 
+												BorderBrush="#5C360C" 
+												BorderThickness="1" 
+												Width="60" 
+												Height="45" 
+												CornerRadius="2">
+															<ContentPresenter x:Name="ButtonContent" 
+															  HorizontalAlignment="Center" 
+															  VerticalAlignment="Center" 
+															  TextBlock.Foreground="#F5B66C" 
+															  TextBlock.FontSize="24" 
+															  TextBlock.FontWeight="SemiBold"/>
+														</Border>
+														<ControlTemplate.Triggers>
+															<!-- Инверсия для математических кнопок -->
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter TargetName="ButtonBorder" Property="Background" Value="#F5B66C"/>
+																<Setter TargetName="ButtonContent" Property="TextBlock.Foreground" Value="#5C360C"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
 
-								<Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource IntervalButtonStyle}">
-									<Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
-									<Setter Property="Content" Value="&#xE8C8;"/>
-									<Setter Property="FontSize" Value="11"/>
-									<Setter Property="Width" Value="32"/>
-									<Setter Property="Height" Value="28"/>
-									<Setter Property="Padding" Value="0"/>
-									<Setter Property="IsTabStop" Value="False"/>
-								</Style>
-							</Grid.Resources>
+										<!-- Иконка копирования (оставляем аккуратной песочной) -->
+										<Style x:Key="IconButtonStyle" TargetType="Button">
+											<Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+											<Setter Property="Content" Value="&#xE8C8;"/>
+											<Setter Property="FontSize" Value="11"/>
+											<Setter Property="Width" Value="32"/>
+											<Setter Property="Height" Value="28"/>
+											<Setter Property="Padding" Value="0"/>
+											<Setter Property="IsTabStop" Value="False"/>
+											<Setter Property="Cursor" Value="Hand"/>
+											<Setter Property="Template">
+												<Setter.Value>
+													<ControlTemplate TargetType="Button">
+														<Border x:Name="ButtonBorder" Background="#EAB069" BorderBrush="#C28B47" BorderThickness="1" CornerRadius="2">
+															<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextBlock.Foreground="#5C360C"/>
+														</Border>
+														<ControlTemplate.Triggers>
+															<Trigger Property="IsMouseOver" Value="True">
+																<Setter TargetName="ButtonBorder" Property="Background" Value="#C28B47"/>
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</Setter.Value>
+											</Setter>
+										</Style>
+									</Grid.Resources>
 
-							<TextBlock Grid.Row="0" Text="Сумма/разность интервалов" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
+									<!-- Заголовок -->
+									<TextBlock Grid.Row="0" Text="Сумма/разность интервалов" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20" Foreground="#5C360C"/>
 
-							<Grid Grid.Row="1">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="140"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-								</Grid.RowDefinitions>
+									<Grid Grid.Row="1">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="140"/>
+										</Grid.ColumnDefinitions>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
 
-								<!-- Результат-->								
-								<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25" VerticalAlignment="Center">
-									<TextBlock x:Name="IntervalResultText" Text="0 д 0 ч 0 мин 0 с" FontSize="20" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center" Margin="0,0,15,0"/>
-									<Button Style="{StaticResource IconButtonStyle}" Click="CopyIntervalResult_Click" ToolTip="Copy"/>
-								</StackPanel>
-								<Button Grid.Row="0" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearResult_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
+										<!-- Результат -->
+										<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25" VerticalAlignment="Center">
+											<TextBlock x:Name="IntervalResultText" Text="0 д 0 ч 0 мин 0 с" FontSize="20" FontWeight="SemiBold" Foreground="#5C360C" VerticalAlignment="Center" Margin="0,0,15,0"/>
+											<Button Style="{StaticResource IconButtonStyle}" Click="CopyIntervalResult_Click" ToolTip="Copy"/>
+										</StackPanel>
+										<Button Grid.Row="0" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearResult_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
 
-								<!-- Ввод интервала -->
-								<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25">
-									<!-- Поля ввода с последовательным TabIndex -->
-									<TextBox x:Name="InputIntervalDays" FontSize="18" Padding="6" Width="60" TabIndex="1" VerticalAlignment="Center"/>
-									<TextBlock Text="д" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+										<!-- Ввод интервала -->
+										<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25">
+											<TextBox x:Name="InputIntervalDays" FontSize="20" Padding="6" Width="60" TabIndex="1" VerticalAlignment="Center" Background="#F3EFE9" BorderBrush="#C28B47" Foreground="#5C360C" PreviewTextInput="InputValue_PreviewTextInput" PreviewKeyDown="InputValue_PreviewKeyDown"/>
+											<TextBlock Text="д" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0" Foreground="#5C360C" FontWeight="SemiBold"/>
 
-									<TextBox x:Name="InputIntervalHours" FontSize="18" Padding="6" Width="60" TabIndex="2" VerticalAlignment="Center"/>
-									<TextBlock Text="ч" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+											<TextBox x:Name="InputIntervalHours" FontSize="20" Padding="6" Width="60" TabIndex="2" VerticalAlignment="Center" Background="#F3EFE9" BorderBrush="#C28B47" Foreground="#5C360C" PreviewTextInput="InputValue_PreviewTextInput" PreviewKeyDown="InputValue_PreviewKeyDown"/>
+											<TextBlock Text="ч" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0" Foreground="#5C360C" FontWeight="SemiBold"/>
 
-									<TextBox x:Name="InputIntervalMinutes" FontSize="18" Padding="6" Width="60" TabIndex="3" VerticalAlignment="Center"/>
-									<TextBlock Text="мин" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+											<TextBox x:Name="InputIntervalMinutes" FontSize="20" Padding="6" Width="60" TabIndex="3" VerticalAlignment="Center" Background="#F3EFE9" BorderBrush="#C28B47" Foreground="#5C360C" PreviewTextInput="InputValue_PreviewTextInput" PreviewKeyDown="InputValue_PreviewKeyDown"/>
+											<TextBlock Text="мин" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0" Foreground="#5C360C" FontWeight="SemiBold"/>
 
-									<TextBox x:Name="InputIntervalSeconds" FontSize="18" Padding="6" Width="60" TabIndex="4" VerticalAlignment="Center"/>
-									<TextBlock Text="с" FontSize="16" VerticalAlignment="Center" Margin="5,0,0,0"/>
-								</StackPanel>
-								<Button Grid.Row="1" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearInputFields_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
+											<TextBox x:Name="InputIntervalSeconds" FontSize="20" Padding="6" Width="60" TabIndex="4" VerticalAlignment="Center" Background="#F3EFE9" BorderBrush="#C28B47" Foreground="#5C360C" PreviewTextInput="InputValue_PreviewTextInput" PreviewKeyDown="InputValue_PreviewKeyDown"/>
+											<TextBlock Text="с" FontSize="16" VerticalAlignment="Center" Margin="5,0,0,0" Foreground="#5C360C" FontWeight="SemiBold"/>
+										</StackPanel>
+										<Button Grid.Row="1" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearInputFields_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
 
-								<!-- Кнопки + - -->
-								<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,0,0">
-									<Button Content="+" Style="{StaticResource MathButtonStyle}" Click="AddInterval_Click" TabIndex="5" Margin="0,0,15,0"/>
-									<Button Content="-" Style="{StaticResource MathButtonStyle}" Click="SubtractInterval_Click" TabIndex="6"/>
-								</StackPanel>
-							</Grid>
-						</Grid>
-					</ScrollViewer>
-				</TabItem>
-
-
-
-				<!-- Вкладка 5: Пустая -->
-				<TabItem>
-					<Grid>
-						<TextBlock Text="Вкладка 5 (Пусто)" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="Gray"/>
+										<!-- Кнопки + - -->
+										<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,0,0">
+											<Button Content="+" Style="{StaticResource MathButtonStyle}" Click="AddInterval_Click" TabIndex="5" Margin="0,0,15,0"/>
+											<Button Content="-" Style="{StaticResource MathButtonStyle}" Click="SubtractInterval_Click" TabIndex="6"/>
+										</StackPanel>
+									</Grid>
+								</Grid>
+							</ScrollViewer>
+						</Border>
 					</Grid>
 				</TabItem>
+
+				<!-- Вкладка 5: Пустая (Набор 5) -->
+				<TabItem>
+					<Grid Background="#F3EFE9">
+						<!-- Кораллово-красная карточка с тонким зазором по периметру -->
+						<Border Background="#EE6E65" CornerRadius="8" Padding="15" Margin="5">
+							<Grid>
+								<!-- Текст теперь тёмно-бордовый (#4B1D1A) из Набора 5 -->
+								<TextBlock Text="Вкладка 5 (Пусто)" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" 
+                           FontSize="16" 
+                           Foreground="#4B1D1A" 
+                           FontWeight="SemiBold"/>
+							</Grid>
+						</Border>
+					</Grid>
+				</TabItem>
+
+
 			</TabControl>
 		</Grid>
 	</Grid>
