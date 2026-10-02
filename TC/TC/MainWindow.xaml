@@ -15,35 +15,35 @@
 		</Grid.RowDefinitions>
 
 		<!-- Верхняя панель навигации -->
-		<Grid Grid.Row="0" Background="#E6E6E6">
+		<Grid Grid.Row="0" Background="#E6E6E6" KeyboardNavigation.TabNavigation="None">
 			<Grid.ColumnDefinitions>
-				<!-- Левая专栏 строго под кнопку ☰ -->
+				<!-- Левая строго под кнопку  -->
 				<ColumnDefinition Width="45"/>
 				<!-- Правая колонка под горизонтальные закладки -->
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 
-			<!-- 1. Кнопка-Гамбургер (слева сверху) -->
-			<Button Grid.Column="0" x:Name="HamburgerButton" Content="☰" FontSize="20" Width="45" Height="45" Background="Transparent" BorderThickness="0" Click="MenuButton_Click"/>
+			<!-- 1. Кнопка-Гамбургер -->
+			<Button Grid.Column="0" x:Name="HamburgerButton" Content="☰" FontSize="20" Width="45" Height="45" Background="Transparent" BorderThickness="0" Click="MenuButton_Click" IsTabStop="False"/>
 
 			<!-- 2. Выпадающее дублирующее меню (изначально скрыто, всплывает под кнопкой при нажатии) -->
 			<Popup x:Name="MenuPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" Placement="Bottom" StaysOpen="True">
 				<Border Background="#E6E6E6" BorderBrush="Gray" BorderThickness="1" Width="160">
 					<ListBox x:Name="MenuListBox" Background="Transparent" BorderThickness="0" SelectionChanged="MenuListBox_SelectionChanged">
-						<ListBoxItem Content="📅 Вычислить разность" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
-						<ListBoxItem Content="⏳ Вкладка 2" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+						<ListBoxItem Content="📅 Разность дат" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+						<ListBoxItem Content="⏳ Разность времени" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 						<ListBoxItem Content="🔄 Конвертер" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
-						<ListBoxItem Content="📁 Вкладка 4" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
+						<ListBoxItem Content="📁 Интервалы" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 						<ListBoxItem Content="📁 Вкладка 5" Height="40" VerticalContentAlignment="Center" Padding="10,0"/>
 					</ListBox>
 				</Border>
 			</Popup>
 
-			<!-- 3. Настоящие видимые закладки с названиями (сверху) -->
-			<!-- Отключен горизонтальный скроллбар, чтобы полоса исчезла -->
+			<!-- 3. Закладки с названиями -->
 			<ListBox Grid.Column="1" x:Name="TopTabHeaders" Background="Transparent" BorderThickness="0" 
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     SelectedIndex="{Binding SelectedIndex, ElementName=MainTabControl, Mode=TwoWay}">
+                     SelectedIndex="{Binding SelectedIndex, ElementName=MainTabControl, Mode=TwoWay}"
+					 IsTabStop="False" KeyboardNavigation.TabNavigation="None">
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<!-- Заменили StackPanel на UniformGrid, чтобы распределить вкладки поровну по всей ширине -->
@@ -59,17 +59,17 @@
 					</Style>
 				</ListBox.ItemContainerStyle>
 
-				<ListBoxItem Content="Разность"/>
+				<ListBoxItem Content="Разность дат"/>
 				<ListBoxItem Content="Вкладка 2"/>
 				<ListBoxItem Content="Конвертер"/>
-				<ListBoxItem Content="Вкладка 4"/>
-				<ListBoxItem Content="Вкладка 5"/>
+				<ListBoxItem Content="Интервалы"/>
+				<ListBoxItem Content="Деление"/>
 			</ListBox>
 		</Grid>
 
 		<!-- Основной контент под меню -->
 		<Grid Grid.Row="1" Margin="15">
-			<TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0">
+			<TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0" Margin="0,-4,0,4">
 				<!-- Полностью скрываем стандартное оформление TabControl, оставляя только начинку -->
 				<TabControl.Resources>
 					<Style TargetType="TabItem">
@@ -100,12 +100,10 @@
 						<!-- Заголовок вкладки (растянут на обе колонки) -->
 						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Вычисление разницы между датами" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-						<!-- Элементы первой даты (строго в левой колонке) -->
-						<TextBlock Grid.Row="1" Grid.Column="0" Text="Дата" Margin="0,0,0,5" FontSize="20"/>
+						<!-- дата 1 -->
 						<DatePicker Grid.Row="2" Grid.Column="0" x:Name="StartDatePicker"  Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" />
 
-						<!-- Элементы второй даты (строго в левой колонке) -->
-						<TextBlock Grid.Row="3" Grid.Column="0" Text="Дата" Margin="0,0,0,5" FontSize="20"/>
+						<!-- дата 2 -->
 						<DatePicker Grid.Row="4" Grid.Column="0" x:Name="EndDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20"/>
 
 						<!-- Блок вывода результата -->
@@ -122,22 +120,18 @@
 				</TabItem>
 
 				<!-- Вкладка 3: Конвертер -->
-				<!-- Вкладка 3: Конвертер -->
 				<TabItem>
-					<!-- Добавляем ScrollViewer, чтобы при нехватке высоты появлялась прокрутка -->
+					<!-- ScrollViewer, при нехватке высоты появляется прокрутка -->
 					<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 						<Grid>
 							<Grid.RowDefinitions>
-								<!-- Верхняя строка под заголовок -->
 								<RowDefinition Height="Auto"/>
-								<!-- Нижняя строка под основной контент (сетка) -->
 								<RowDefinition Height="*"/>
 							</Grid.RowDefinitions>
 
-							<!-- Сверху заголовок -->
 							<TextBlock Grid.Row="0" Text="Конвертер единиц времени" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-							<!-- Сетка основного контента: 45% | 10% | 45% -->
+							<!-- Сетка основного контента: 30% | 10% | 60% -->
 							<Grid Grid.Row="1">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="0.30*"/>
@@ -165,7 +159,7 @@
 								<!-- ================= ПРАВАЯ ЧАСТЬ (45%) ================= -->
 								<StackPanel Grid.Column="2">
 									<Grid Grid.IsSharedSizeScope="True">
-										<!-- 1. РЕСУРСЫ СЕТКИ (Определяем стиль кнопки внутри Grid) -->
+										<!-- 1. Определяем стиль кнопки внутри Grid -->
 										<Grid.Resources>
 											<Style x:Key="CopyButtonStyle" TargetType="Button">
 												<Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
@@ -181,7 +175,7 @@
 												<Setter Property="BorderThickness" Value="1"/>
 												<Setter Property="Foreground" Value="#555555"/>
 												<Setter Property="Cursor" Value="Hand"/>
-												<Setter Property="ToolTip" Value="Копировать в буфер обмена"/>
+												<Setter Property="ToolTip" Value="Копировать"/>
 												<Style.Triggers>
 													<Trigger Property="IsMouseOver" Value="True">
 														<Setter Property="Background" Value="#E5E5E5"/>
@@ -251,12 +245,98 @@
 				</TabItem>
 
 
-				<!-- Вкладка 4: Пустая -->
+				<!-- Вкладка 4: Сумма/разность интервалов -->
 				<TabItem>
-					<Grid>
-						<TextBlock Text="Вкладка 4 (Пусто)" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="Gray"/>
-					</Grid>
+					<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<!-- Заголовок -->
+								<RowDefinition Height="*" />
+								<!-- Контент -->
+							</Grid.RowDefinitions>
+
+							<!-- Описание стилей кнопок -->
+							<Grid.Resources>
+								<Style x:Key="IntervalButtonStyle" TargetType="Button">
+									<Setter Property="FontSize" Value="14"/>
+									<Setter Property="Padding" Value="12,5"/>
+									<Setter Property="Background" Value="#F5F5F5"/>
+									<Setter Property="BorderBrush" Value="#CCCCCC"/>
+									<Setter Property="BorderThickness" Value="1"/>
+									<Setter Property="Cursor" Value="Hand"/>
+									<Setter Property="IsTabStop" Value="False"/>
+									<!-- Исключаем обычные кнопки из перехода по Tab -->
+								</Style>
+
+								<Style x:Key="MathButtonStyle" TargetType="Button" BasedOn="{StaticResource IntervalButtonStyle}">
+									<Setter Property="FontSize" Value="24"/>
+									<Setter Property="FontWeight" Value="SemiBold"/>
+									<Setter Property="Width" Value="60"/>
+									<Setter Property="Height" Value="45"/>
+									<Setter Property="IsTabStop" Value="True"/>
+									<!-- Разрешаем Tab для + и - -->
+								</Style>
+
+								<Style x:Key="IconButtonStyle" TargetType="Button" BasedOn="{StaticResource IntervalButtonStyle}">
+									<Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+									<Setter Property="Content" Value="&#xE8C8;"/>
+									<Setter Property="FontSize" Value="11"/>
+									<Setter Property="Width" Value="32"/>
+									<Setter Property="Height" Value="28"/>
+									<Setter Property="Padding" Value="0"/>
+									<Setter Property="IsTabStop" Value="False"/>
+								</Style>
+							</Grid.Resources>
+
+							<TextBlock Grid.Row="0" Text="Сумма/разность интервалов" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+							<Grid Grid.Row="1">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="140"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+
+								<!-- Результат-->								
+								<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25" VerticalAlignment="Center">
+									<TextBlock x:Name="IntervalResultText" Text="0 д 0 ч 0 мин 0 с" FontSize="20" FontWeight="SemiBold" Foreground="#0078D4" VerticalAlignment="Center" Margin="0,0,15,0"/>
+									<Button Style="{StaticResource IconButtonStyle}" Click="CopyIntervalResult_Click" ToolTip="Copy"/>
+								</StackPanel>
+								<Button Grid.Row="0" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearResult_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
+
+								<!-- Ввод интервала -->
+								<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,20,25">
+									<!-- Поля ввода с последовательным TabIndex -->
+									<TextBox x:Name="InputIntervalDays" FontSize="18" Padding="6" Width="60" TabIndex="1" VerticalAlignment="Center"/>
+									<TextBlock Text="д" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+
+									<TextBox x:Name="InputIntervalHours" FontSize="18" Padding="6" Width="60" TabIndex="2" VerticalAlignment="Center"/>
+									<TextBlock Text="ч" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+
+									<TextBox x:Name="InputIntervalMinutes" FontSize="18" Padding="6" Width="60" TabIndex="3" VerticalAlignment="Center"/>
+									<TextBlock Text="мин" FontSize="16" VerticalAlignment="Center" Margin="5,0,15,0"/>
+
+									<TextBox x:Name="InputIntervalSeconds" FontSize="18" Padding="6" Width="60" TabIndex="4" VerticalAlignment="Center"/>
+									<TextBlock Text="с" FontSize="16" VerticalAlignment="Center" Margin="5,0,0,0"/>
+								</StackPanel>
+								<Button Grid.Row="1" Grid.Column="1" Content="Очистить" Style="{StaticResource IntervalButtonStyle}" Click="ClearInputFields_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,25"/>
+
+								<!-- Кнопки + - -->
+								<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,0,0">
+									<Button Content="+" Style="{StaticResource MathButtonStyle}" Click="AddInterval_Click" TabIndex="5" Margin="0,0,15,0"/>
+									<Button Content="-" Style="{StaticResource MathButtonStyle}" Click="SubtractInterval_Click" TabIndex="6"/>
+								</StackPanel>
+							</Grid>
+						</Grid>
+					</ScrollViewer>
 				</TabItem>
+
+
 
 				<!-- Вкладка 5: Пустая -->
 				<TabItem>

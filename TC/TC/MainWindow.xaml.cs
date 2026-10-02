@@ -7,9 +7,41 @@ namespace TC
 {
 	public partial class MainWindow : Window
 	{
+		private long currentTotalSeconds = 0;
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			MainTabControl.SelectionChanged += (s, e) =>
+			{
+				//Если переключились на вкладку Конвертер
+				if (MainTabControl.SelectedIndex == 2)
+				{
+					Dispatcher.BeginInvoke(new Action(() =>
+					{
+						if (InputValue != null)
+						{
+							InputValue.Focus();
+							InputValue.SelectAll(); // Выделяем текст, чтобы можно было сразу вводить новое число
+						}
+					}), System.Windows.Threading.DispatcherPriority.Input);
+				}
+
+
+				// если переключились на вкладку Интервалы
+				if (e.Source is TabControl && MainTabControl.SelectedIndex == 3)
+				{
+					Dispatcher.BeginInvoke(new Action(() =>
+					{
+						if (InputIntervalDays != null)
+						{
+							InputIntervalDays.Focus();
+							InputIntervalDays.SelectAll();
+						}
+					}), System.Windows.Threading.DispatcherPriority.Input);
+				}
+			};
+
 
 			if (MainTabControl != null) MainTabControl.SelectedIndex = 0;
 			if (FromUnit != null) FromUnit.SelectedIndex = 1; // Выбираем "Минуты" по умолчанию
@@ -57,6 +89,7 @@ namespace TC
 				MenuListBox.SelectedIndex = -1;
 			}
 		}
+
 
 		// 3. Операция на Вкладке 1: Дата минус Дата
 		private void CalculateDateDifference(object sender, SelectionChangedEventArgs e)
@@ -235,6 +268,118 @@ namespace TC
 					datePickerTextBox.Text = string.Empty;
 
 		}
+
+		// Вызывается каждый раз, когда открывается (активируется) вкладка 4
+		private void IntervalTab_Loaded(object sender, RoutedEventArgs e)
+		{
+			// Восстанавливаем текст результата, если он уже вычислялся ранее
+			if (IntervalResultText != null)
+			{
+				UpdateIntervalResultText();
+			}
+
+			// Принудительно ставим курсор в поле ввода Дней и выделяем текст внутри
+			if (InputIntervalDays != null)
+			{
+				InputIntervalDays.Focus();
+				InputIntervalDays.SelectAll();
+			}
+		}
+
+		// Кнопка ПЛЮС
+		private void AddInterval_Click(object sender, RoutedEventArgs e)
+		{
+			long inputSeconds = GetInputIntervalInSeconds();
+			currentTotalSeconds += inputSeconds;
+
+			UpdateIntervalResultText();
+			ResetFocusToDays();
+		}
+
+		// Кнопка МИНУС
+		private void SubtractInterval_Click(object sender, RoutedEventArgs e)
+		{
+			long inputSeconds = GetInputIntervalInSeconds();
+			currentTotalSeconds -= inputSeconds;
+
+			// Защита от отрицательного времени (если нужно уйти в минус, просто удалите это условие)
+			if (currentTotalSeconds < 0) currentTotalSeconds = 0;
+
+			UpdateIntervalResultText();
+			ResetFocusToDays();
+		}
+
+		// Очистить поля ввода
+		private void ClearInputFields_Click(object sender, RoutedEventArgs e)
+		{
+			if (InputIntervalDays != null) InputIntervalDays.Text = "";
+			if (InputIntervalHours != null) InputIntervalHours.Text = "";
+			if (InputIntervalMinutes != null) InputIntervalMinutes.Text = "";
+			if (InputIntervalSeconds != null) InputIntervalSeconds.Text = "";
+
+			ResetFocusToDays();
+		}
+
+		// Очистить накопленный результат
+		private void ClearResult_Click(object sender, RoutedEventArgs e)
+		{
+			currentTotalSeconds = 0;
+			UpdateIntervalResultText();
+			ResetFocusToDays();
+		}
+
+		// Копирование строки формата в буфер
+		private void CopyIntervalResult_Click(object sender, RoutedEventArgs e)
+		{
+			if (IntervalResultText == null) return;
+			try
+			{
+				Clipboard.SetText(IntervalResultText.Text);
+			}
+			catch (System.Runtime.InteropServices.ExternalException) { }
+		}
+
+		// ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ СЧЕТА И ФОКУСА
+		private long GetInputIntervalInSeconds()
+		{
+			if (InputIntervalDays == null || InputIntervalHours == null ||
+				InputIntervalMinutes == null || InputIntervalSeconds == null) return 0;
+
+			long.TryParse(InputIntervalDays.Text, out long d);
+			long.TryParse(InputIntervalHours.Text, out long h);
+			long.TryParse(InputIntervalMinutes.Text, out long m);
+			long.TryParse(InputIntervalSeconds.Text, out long s);
+
+			return s + (m * 60) + (h * 3600) + (d * 86400);
+		}
+
+		private void UpdateIntervalResultText()
+		{
+			if (IntervalResultText == null) return;
+
+			long tempSeconds = currentTotalSeconds;
+
+			long days = tempSeconds / 86400;
+			tempSeconds %= 86400;
+
+			long hours = tempSeconds / 3600;
+			tempSeconds %= 3600;
+
+			long minutes = tempSeconds / 60;
+			long seconds = tempSeconds % 60;
+
+			IntervalResultText.Text = string.Format("{0} д {1} ч {2} мин {3} с", days, hours, minutes, seconds);
+		}
+
+		private void ResetFocusToDays()
+		{
+			if (InputIntervalDays != null)
+			{
+				InputIntervalDays.Focus();
+				InputIntervalDays.SelectAll();
+			}
+		}
+
 
 	}
 }
