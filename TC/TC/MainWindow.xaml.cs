@@ -12,8 +12,21 @@ namespace TC
 		{
 			InitializeComponent();
 
+			this.Loaded += (s, e) =>
+			{
+				if (StartDatePicker != null) StartDatePicker.Focus();
+			};
+
 			MainTabControl.SelectionChanged += (s, e) =>
 			{
+				//Если переключились на вкладку Разность дат
+				if (MainTabControl.SelectedIndex == 0)
+				{
+					Dispatcher.BeginInvoke(new Action(() =>
+					{
+						if (StartDatePicker != null) StartDatePicker.Focus();
+					}), System.Windows.Threading.DispatcherPriority.Input);
+				}
 				//Если переключились на вкладку Конвертер
 				if (MainTabControl.SelectedIndex == 2)
 				{
@@ -262,12 +275,34 @@ namespace TC
 		private void StartDatePicker_Loaded(object sender, RoutedEventArgs e)
 		{
 			var datePicker = sender as DatePicker;
-						
-				var datePickerTextBox = datePicker.Template.FindName("PART_TextBox", datePicker) as System.Windows.Controls.Primitives.DatePickerTextBox;
-				
-					datePickerTextBox.Text = string.Empty;
+			if (datePicker == null) return;
+
+			// Принудительно заставляем применить шаблон к элементу
+			datePicker.ApplyTemplate();
+
+			// Находим внутреннее текстовое поле
+			var textBox = datePicker.Template.FindName("PART_TextBox", datePicker) as System.Windows.Controls.Primitives.DatePickerTextBox;
+			if (textBox != null)
+			{
+				// Подписываемся на событие изменения шаблона самого текстового поля, 
+				// так как именно там внутри живет встроенный TextBlock подсказки
+				textBox.Loaded += (s, args) =>
+				{
+					var dtb = s as System.Windows.Controls.Primitives.DatePickerTextBox;
+					if (dtb == null) return;
+
+					// Ищем внутри текстового поля элемент ContentControl (это и есть Watermark)
+					var watermarkControl = dtb.Template.FindName("PART_Watermark", dtb) as ContentControl;
+					if (watermarkControl != null)
+					{
+						// Заменяем стандартный текст "Выбор даты" на наш
+						watermarkControl.Content = "Дата";
+					}
+				};
+			}
 
 		}
+
 
 		// Вызывается каждый раз, когда открывается (активируется) вкладка 4
 		private void IntervalTab_Loaded(object sender, RoutedEventArgs e)

@@ -26,7 +26,7 @@
 			<!-- 1. Кнопка-Гамбургер -->
 			<Button Grid.Column="0" x:Name="HamburgerButton" Content="☰" FontSize="20" Width="45" Height="45" Background="Transparent" BorderThickness="0" Click="MenuButton_Click" IsTabStop="False"/>
 
-			<!-- 2. Выпадающее дублирующее меню (изначально скрыто, всплывает под кнопкой при нажатии) -->
+			<!-- 2. Выпадающее меню  -->
 			<Popup x:Name="MenuPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" Placement="Bottom" StaysOpen="True">
 				<Border Background="#E6E6E6" BorderBrush="Gray" BorderThickness="1" Width="160">
 					<ListBox x:Name="MenuListBox" Background="Transparent" BorderThickness="0" SelectionChanged="MenuListBox_SelectionChanged">
@@ -46,7 +46,7 @@
 					 IsTabStop="False" KeyboardNavigation.TabNavigation="None">
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
-						<!-- Заменили StackPanel на UniformGrid, чтобы распределить вкладки поровну по всей ширине -->
+						
 						<UniformGrid Rows="1" VerticalAlignment="Stretch"/>
 					</ItemsPanelTemplate>
 				</ListBox.ItemsPanel>
@@ -70,7 +70,6 @@
 		<!-- Основной контент под меню -->
 		<Grid Grid.Row="1" Margin="15">
 			<TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0" Margin="0,-4,0,4">
-				<!-- Полностью скрываем стандартное оформление TabControl, оставляя только начинку -->
 				<TabControl.Resources>
 					<Style TargetType="TabItem">
 						<Setter Property="Visibility" Value="Collapsed"/>
@@ -79,8 +78,8 @@
 
 				<!-- Вкладка 1: Разница дат -->
 				<TabItem>
-			
-					<Grid>
+					
+					<Grid KeyboardNavigation.TabNavigation="Cycle">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="0.45*"/>
 							<ColumnDefinition Width="0.1*"/>
@@ -88,29 +87,48 @@
 						</Grid.ColumnDefinitions>
 
 						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>	<!-- Заголовок -->
-							<RowDefinition Height="Auto"/>	<!-- Надпись 1 -->
-							<RowDefinition Height="Auto"/>	<!-- Календарь 1 -->
-							<RowDefinition Height="Auto"/>	<!-- Надпись 2 -->
-							<RowDefinition Height="Auto"/>	<!-- Календарь 2 -->
-							<RowDefinition Height="Auto"/>	<!-- Надпись Результат -->
-							<RowDefinition Height="Auto"/>	<!-- Результат -->
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							
 						</Grid.RowDefinitions>
 
-						<!-- Заголовок вкладки (растянут на обе колонки) -->
+						<!-- Заголовок вкладки -->
 						<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Вычисление разницы между датами" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
-						<!-- дата 1 -->
-						<DatePicker Grid.Row="2" Grid.Column="0" x:Name="StartDatePicker"  Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" />
+						<!-- дата 1 (TabIndex="1") -->
+						<DatePicker Grid.Row="1" Grid.Column="0" x:Name="StartDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" TabIndex="1"/>
 
-						<!-- дата 2 -->
-						<DatePicker Grid.Row="4" Grid.Column="0" x:Name="EndDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20"/>
+						<!-- дата 2 (TabIndex="2") -->
+						<DatePicker Grid.Row="2" Grid.Column="0" x:Name="EndDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" TabIndex="2"/>
 
 						<!-- Блок вывода результата -->
-						<TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Результат:" FontWeight="SemiBold" Margin="0,10,0,5" FontSize="20"/>
-						<TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DateResultText" Text=" " FontSize="20" Foreground="#0078D4" TextWrapping="Wrap"/>
+
+						<Border Grid.Row="3" Grid.Column="0" x:Name="ResultBorder" 
+        Background="Transparent" 
+        BorderBrush="#0078D4" 
+        BorderThickness="1" 
+        CornerRadius="2"
+        Height="80" 
+        Margin="0,20,0,0" 
+        HorizontalAlignment="Stretch">
+
+							<!-- Текст по умолчанию со стартовыми нулями -->
+							<TextBlock x:Name="DateResultText" 
+               Text=" " 
+               FontSize="20" 
+               Foreground="#0078D4" 
+               TextWrapping="Wrap" 
+               VerticalAlignment="Center" 
+               HorizontalAlignment="Left" 
+               Margin="10,0"/>
+						</Border>
+
+
 					</Grid>
 				</TabItem>
+
 
 				<!-- Вкладка 2: Пустая -->
 				<TabItem>
