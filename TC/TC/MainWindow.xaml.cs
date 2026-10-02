@@ -425,6 +425,16 @@ namespace TC
 			}
 		}
 
+		// Блокируем нажатие любых клавиш, кроме цифр от 0 до 9
+		private void InputValue_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			// Проверяем, является ли вводимый символ цифрой
+			if (!char.IsDigit(e.Text, e.Text.Length - 1))
+			{
+				// Если это буква или знак — отменяем ввод (символ не появится в поле)
+				e.Handled = true;
+			}
+		}
 
 	}
 }
