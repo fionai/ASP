@@ -284,6 +284,11 @@ namespace TC
 			var textBox = datePicker.Template.FindName("PART_TextBox", datePicker) as System.Windows.Controls.Primitives.DatePickerTextBox;
 			if (textBox != null)
 			{
+				// === ИЗМЕНЕНИЕ ЦВЕТА ПОЛЯ ВВОДА ===
+				// Устанавливаем фон текстового поля как у меню (#F3EFE9) и цвет вводимых цифр (#4E464B)
+				textBox.Background = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#F3EFE9"));
+				textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#4E464B"));
+
 				// Подписываемся на событие изменения шаблона самого текстового поля, 
 				// так как именно там внутри живет встроенный TextBlock подсказки
 				textBox.Loaded += (s, args) =>
@@ -297,12 +302,17 @@ namespace TC
 					{
 						// Заменяем стандартный текст "Выбор даты" на наш
 						watermarkControl.Content = "Дата";
+
+						// === ИЗМЕНЕНИЕ ЦВЕТА ПОДСКАЗКИ ===
+						// Красим саму надпись "Дата" в тёмный цвет карточки (#4E464B) для хорошей видимости
+						watermarkControl.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#4E464B"));
 					}
 				};
 			}
+		} // Скобка закрытия метода добавлена, так как в вашем фрагменте её не было
 
-		}
 
+		
 
 		// Вызывается каждый раз, когда открывается (активируется) вкладка 4
 		private void IntervalTab_Loaded(object sender, RoutedEventArgs e)
