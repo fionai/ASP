@@ -1,0 +1,45 @@
+﻿<h3>ChooseDirection</h3>
+@using Academy.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<AcademyContext> DbFactory
+
+<span class="text-danger">*</span>
+<label for="direction" class="form-label">direction:</label>
+@*  <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/>  *@
+<InputSelect id="direction" @bind-Value="Group.direction" class="form-control" >
+   @*  <option selected disabled> --- Выберите направление обучения</option> *@
+    @using (AcademyContext context = DbFactory.CreateDbContext())
+    {
+		<option selected disabled value="0"> --- Выберите направление обучения </option>
+        @foreach (Direction direction in context.Directions)
+        {
+            if (direction.direction_id == 0)
+            {
+					@* <option selected disabled > @direction.direction_name </option> *@
+            }
+            else
+            {                
+                <option value="@direction.direction_id">@direction.direction_name</option>
+            }
+        }
+    }
+</InputSelect>
+<ValidationMessage For="() => Group.direction" class="text-danger" />
+
+@code 
+{
+    [Parameter]
+    public Group Group { get; set; }
+
+    AcademyContext context;
+    IQueryable<Direction> directions;
+
+    [Parameter]
+    public bool ShowPlaceholder { get; set; }
+
+    // protected override void OnInitialized()
+    // {
+    //     context = DbFactory.CreateDbContext();
+    //     directions = context.Directions;
+    // }
+}

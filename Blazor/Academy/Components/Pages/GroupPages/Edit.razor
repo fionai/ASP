@@ -30,10 +30,10 @@ else
                     <InputText id="group_name" @bind-Value="Group.group_name" class="form-control" aria-required="true"/>
                     <ValidationMessage For="() => Group.group_name" class="text-danger" />
                 </div>
-                <div class="mb-3">
+               @*  <div class="mb-3">
                 <span class="text-danger">*</span>
                     <label for="direction" class="form-label">direction:</label>
-                    @* <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/> *@
+                     <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/> 
                     <InputSelect id="direction" @bind-Value="Group.direction" class="form-control">
                         @using(AcademyContext context = DbFactory.CreateDbContext())
                         {
@@ -44,12 +44,14 @@ else
                         }
                     </InputSelect>
                     <ValidationMessage For="() => Group.direction" class="text-danger" />
-                </div>
-                <div class="mb-3">
+                </div> *@
+                <ChooseDirection Group="Group" />
+
+                @* <div class="mb-3">
                     <label for="learning_days" class="form-label">learning_days:</label>
                     <InputNumber id="learning_days" @bind-Value="Group.learning_days" class="form-control" />
                     <ValidationMessage For="() => Group.learning_days" class="text-danger" />
-                </div>
+                </div> *@
                 <LearningDays Group="Group"/>
                 <div class="mb-3">
                     <label for="start_time" class="form-label">start_time:</label>
