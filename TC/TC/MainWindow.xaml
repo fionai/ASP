@@ -99,7 +99,6 @@
 						<Setter Property="Template">
 							<Setter.Value>
 								<ControlTemplate TargetType="ListBoxItem">
-									<!-- Убран лишний Grid и жесткая ширина. Используется Margin для сдвига правого края влево -->
 									<Border x:Name="ItemBorder" 
                                 Background="{TemplateBinding Background}" 
                                 Padding="5,12"
@@ -108,7 +107,7 @@
 										<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
 									</Border>
 									<ControlTemplate.Triggers>
-										<!-- Маркер активной вкладки — подчеркивание снизу -->
+										<!-- Подчеркивание активной вкладки -->
 										<Trigger Property="IsSelected" Value="True">
 											<Setter TargetName="ItemBorder" Property="BorderBrush" Value="#333333"/>
 											<Setter TargetName="ItemBorder" Property="BorderThickness" Value="0,0,0,3"/>
@@ -126,7 +125,7 @@
 					</Style>
 				</ListBox.ItemContainerStyle>
 
-				<!-- Сами вкладки с жестко зафиксированными цветами палитры -->
+				<!-- вкладки -->
 				<ListBoxItem Content="Разность дат" Background="#4E464B" Foreground="#FFFFFF"/>
 				<ListBoxItem Content="Вкладка 2" Background="#91BCB6" Foreground="#2E4A46"/>
 				<ListBoxItem Content="Конвертер" Background="#F9EFC7" Foreground="#5B4F23"/>
@@ -137,7 +136,6 @@
 
 		</Grid>
 
-
 		<!-- Основной контент под меню -->
 		<Grid Grid.Row="1" Margin="15">
 			<TabControl x:Name="MainTabControl" Background="Transparent" BorderThickness="0" Margin="0,-4,0,4">
@@ -147,7 +145,7 @@
 					</Style>
 				</TabControl.Resources>
 
-				<!-- Вкладка 1: Разница дат (Набор 1) -->
+				<!-- Вкладка 1: Разница дат и времени -->
 				<TabItem Background="#F3EFE9">
 					<Grid Background="#F3EFE9">
 						<Border Background="#4E464B" CornerRadius="8" Padding="15" Margin="1">
@@ -157,50 +155,82 @@
 									<ColumnDefinition Width="0.1*"/>
 									<ColumnDefinition Width="0.45*"/>
 								</Grid.ColumnDefinitions>
-
 								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="Auto"/>
 								</Grid.RowDefinitions>
 
-								<!-- Заголовок вкладки (Дополнительный цвет 2: Белый) -->
-								<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Вычисление разницы между датами" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20" Foreground="#D1C7CC"/>
+								<!-- Заголовок вкладки -->
+								<TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                           Text="Вычисление разницы между датами и временем" 
+                           FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20" Foreground="#D1C7CC"/>
 
-								<!-- дата 1  -->
-								<DatePicker Grid.Row="1" Grid.Column="0" x:Name="StartDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" TabIndex="1"
-                            Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B"/>
+								<!-- ЛЕВАЯ КОЛОНКА (ДАТЫ) -->
+								<!-- Дата 1 -->
+								<DatePicker Grid.Row="1" Grid.Column="0" x:Name="StartDatePicker" 
+                            Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" 
+                            HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" 
+                            TabIndex="1" Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B"/>
 
-								<!-- дата 2 -->
-								<DatePicker Grid.Row="2" Grid.Column="0" x:Name="EndDatePicker" Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" TabIndex="2"
-                            Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B"/>
+								<!-- Дата 2 -->
+								<DatePicker Grid.Row="2" Grid.Column="0" x:Name="EndDatePicker" 
+                            Margin="0,0,0,15" SelectedDateChanged="CalculateDateDifference" 
+                            HorizontalAlignment="Stretch" FontSize="20" Loaded="StartDatePicker_Loaded" 
+                            TabIndex="3" Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B"/>
 
-								<!-- Блок вывода результата (Рамка — Дополнительный цвет 2: Белый) -->
+								<!-- Блок вывода результата дат -->
 								<Border Grid.Row="3" Grid.Column="0" x:Name="ResultBorder" 
-                        Background="Transparent" 
-                        BorderBrush="#FFFFFF" 
-                        BorderThickness="1" 
-                        CornerRadius="2"
-                        Height="80" 
-                        Margin="0,20,0,0" 
-                        HorizontalAlignment="Stretch">
-
-									<!-- Текст результата (Дополнительный цвет 1: #6A5F65) -->
-									<TextBlock x:Name="DateResultText" 
-                               Text="0 дней&#x0a;(0 лет, 0 мес, 0 дн.)" 
-                               FontSize="20" 
-                               Foreground="#D1C7CC" 
-                               TextWrapping="Wrap" 
-                               VerticalAlignment="Center" 
-                               HorizontalAlignment="Left" 
-                               Margin="10,0"
-                               FontWeight="SemiBold"/>
+                        Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="2" 
+                        Height="80" Margin="0,20,0,0" HorizontalAlignment="Stretch">
+									<TextBlock x:Name="DateResultText" Text="" FontSize="20" Foreground="#D1C7CC" 
+                               TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                               Margin="10,0" FontWeight="SemiBold"/>
 								</Border>
+
+
+								<!-- ПРАВАЯ КОЛОНКА (ВРЕМЯ) -->
+								<!-- Время 1 -->
+								<TextBox Grid.Row="1" Grid.Column="2" x:Name="StartTimeTextBox" 
+                         Margin="0,0,0,15" TextChanged="TimeTextBox_TextChanged" 
+                         HorizontalAlignment="Stretch" VerticalContentAlignment="Center" FontSize="20" 
+                         TabIndex="2" Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B" 
+                         Padding="5,2"/>
+
+								<!-- Время 2 -->
+								<TextBox Grid.Row="2" Grid.Column="2" x:Name="EndTimeTextBox" 
+                         Margin="0,0,0,15" TextChanged="TimeTextBox_TextChanged" 
+                         HorizontalAlignment="Stretch" VerticalContentAlignment="Center" FontSize="20" 
+                         TabIndex="4" Background="#F3EFE9" BorderBrush="#6A5F65" Foreground="#4E464B" 
+                         Padding="5,2"/>
+
+								<!-- Блок вывода результата времени -->
+								<Border Grid.Row="3" Grid.Column="2" x:Name="TimeResultBorder" 
+                        Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="2" 
+                        Height="80" Margin="0,20,0,0" HorizontalAlignment="Stretch">
+									<TextBlock x:Name="TimeResultText" Text="" FontSize="20" Foreground="#D1C7CC" 
+                               TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                               Margin="10,0" FontWeight="SemiBold"/>
+								</Border>
+
+
+								<!-- НИЖНИЙ БЛОК (ОБЩИЙ РЕЗУЛЬТАТ) -->
+								<!-- Общая разность на всю ширину под результатами -->
+								<Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" x:Name="TotalResultBorder" 
+                        Background="Transparent" BorderBrush="#FFFFFF" BorderThickness="1" CornerRadius="2" 
+                        Height="60" Margin="0,20,0,0" HorizontalAlignment="Stretch">
+									<TextBlock x:Name="TotalResultText" Text="" FontSize="20" Foreground="#D1C7CC" 
+                               TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                               Margin="10,0" FontWeight="SemiBold"/>
+								</Border>
+
 							</Grid>
 						</Border>
 					</Grid>
 				</TabItem>
+
 
 				<!-- Вкладка 2: Пустая (Набор 2) -->
 				<TabItem>

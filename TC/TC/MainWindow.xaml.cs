@@ -105,51 +105,136 @@ namespace TC
 
 
 		// 3. Операция на Вкладке 1: Дата минус Дата
-		private void CalculateDateDifference(object sender, SelectionChangedEventArgs e)
+		private void CalculateDateTimeDifference()
 		{
-			if (StartDatePicker?.SelectedDate != null && EndDatePicker?.SelectedDate != null)
+			// Безопасная проверка: если UI ещё не инициализировался, выходим
+			if (StartDatePicker == null || EndDatePicker == null ||
+				StartTimeTextBox == null || EndTimeTextBox == null ||
+				DateResultText == null || TimeResultText == null || TotalResultText == null)
+			{
+				return;
+			}
+
+			// ИСПРАВЛЕНИЕ ОШИБКИ CS0165: Явно объявляем переменные времени заранее
+			TimeSpan startTime = TimeSpan.Zero;
+			TimeSpan endTime = TimeSpan.Zero;
+
+			// Безопасный раздельный парсинг полей времени
+			bool isStartTimeValid = TimeSpan.TryParse(StartTimeTextBox.Text, out startTime);
+			bool isEndTimeValid = TimeSpan.TryParse(EndTimeTextBox.Text, out endTime);
+
+			// Флаги валидности (обновленные)
+			bool isDateValid = StartDatePicker.SelectedDate != null && EndDatePicker.SelectedDate != null;
+			bool isTimeValid = isStartTimeValid && isEndTimeValid;
+
+			// Переменные для общего расчёта
+			DateTime startDateTime = DateTime.MinValue;
+			DateTime endDateTime = DateTime.MinValue;
+
+			// ==========================================
+			// 1. РАЗНОСТЬ ДАТ (Ваша оригинальная логика)
+			// ==========================================
+			if (isDateValid)
 			{
 				DateTime start = StartDatePicker.SelectedDate.Value;
 				DateTime end = EndDatePicker.SelectedDate.Value;
 
-				DateTime tmp;
+				// Сохраняем для общего расчёта
+				startDateTime = start;
+				endDateTime = end;
+
+				// Ваша логика перестановки мест, если дата конца меньше даты начала
 				if (end < start)
 				{
-					tmp = end;
+					DateTime tmp = end;
 					end = start;
 					start = tmp;
 				}
 
-				// Считаем разницу во времени
 				TimeSpan difference = end - start;
 				int totalDays = Math.Abs(difference.Days);
 				int years = 0;
 				int months = 0;
 				int days = 0;
 
-				tmp = start;
-				while (tmp.AddYears(1) <= end)
+				DateTime tmpLoop = start;
+				while (tmpLoop.AddYears(1) <= end)
 				{
-					tmp = tmp.AddYears(1);
+					tmpLoop = tmpLoop.AddYears(1);
 					years++;
-				}	
-				while (tmp.AddMonths(1) <= end)
+				}
+				while (tmpLoop.AddMonths(1) <= end)
 				{
-					tmp = tmp.AddMonths(1);
+					tmpLoop = tmpLoop.AddMonths(1);
 					months++;
 				}
-				days = (end-tmp).Days;
+				days = (end - tmpLoop).Days;
 
-				if (DateResultText != null)
-				{
-					DateResultText.Text = $"{totalDays} дней \n({years} лет, {months} мес, {days} дн.)";
-				}
+				DateResultText.Text = $"{totalDays} дней \n({years} лет, {months} мес, {days} дн.)";
 			}
 			else
 			{
-				DateResultText.Text = "";
+				DateResultText.Text = ""; // Хотя бы одна дата пустая — результат пустой
+			}
+
+			// ==========================================
+			// 2. РАЗНОСТЬ ВРЕМЕНИ
+			// ==========================================
+			if (isTimeValid)
+			{
+				// Вычисляем модуль разности времени
+				TimeSpan timeDiff = endTime - startTime;
+				TimeSpan absTimeDiff = timeDiff.Duration();
+
+				// Выводим в формате: Всего часов и минут \n (чч:мм:сс)
+				TimeResultText.Text = $"{(int)absTimeDiff.TotalHours} ч. {absTimeDiff.Minutes} мин. \n({absTimeDiff:hh\\:mm\\:ss})";
+			}
+			else
+			{
+				TimeResultText.Text = ""; // Хотя бы одно время пустое — результат пустой
+			}
+
+			// ==========================================
+			// 3. ОБЩАЯ РАЗНОСТЬ (Дата1+Время1 и Дата2+Время2)
+			// ==========================================
+			if (isDateValid && isTimeValid)
+			{
+				// Объединяем даты со временем
+				DateTime fullStart = startDateTime.Add(startTime);
+				DateTime fullEnd = endDateTime.Add(endTime);
+
+				if (fullEnd < fullStart)
+				{
+					DateTime tmp = fullEnd;
+					fullEnd = fullStart;
+					fullStart = tmp;
+				}
+
+				TimeSpan totalDiff = fullEnd - fullStart;
+				int totalDiffDays = totalDiff.Days;
+
+				// Форматируем остаток времени (часы, минуты, секунды)
+				TotalResultText.Text = $"Общая разность: {totalDiffDays} дн. {totalDiff:hh\\:mm\\:ss}";
+			}
+			else
+			{
+				TotalResultText.Text = ""; // Если хотя бы одно из 4-х полей пустое — пусто
 			}
 		}
+
+
+		// Изменяем старый обработчик DatePicker, чтобы он вызывал общий расчёт
+		private void CalculateDateDifference(object sender, SelectionChangedEventArgs e)
+		{
+			CalculateDateTimeDifference();
+		}
+
+		// Добавляем обработчик для TextBox (нужно привязать в XAML: TextChanged="TimeTextBox_TextChanged")
+		private void TimeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			CalculateDateTimeDifference();
+		}
+
 
 		// 4. Операция на Вкладке 3: Конвертер единиц времени
 		private void ConvertTime(object sender, SelectionChangedEventArgs e) => DoConversion();
