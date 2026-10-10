@@ -8,9 +8,9 @@
 @inject IDbContextFactory<AcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Students </PageTitle>
 
-<h1>Index</h1>
+<h1>Students (@context.Students.Count())</h1>
 <div class="controls">
     <p>
         <a href="students/create" class="btn btn-primary">Добавить</a>
@@ -28,7 +28,7 @@
     SortBy="sortBy">
         <a href="@($"students/details?stud_id={student.stud_id}")">@student.FullName</a>
     </TemplateColumn>
-    <PropertyColumn Property="student => student.photo" /> 
+    @* <PropertyColumn Property="student => student.photo" />  *@
     <PropertyColumn Property="student => student.birth_date"                    Sortable="true" />
     <PropertyColumn Property="student => student.Group.group_name"              Sortable="true" />
     <PropertyColumn Property="student => student.Group.Direction.direction_name" />
