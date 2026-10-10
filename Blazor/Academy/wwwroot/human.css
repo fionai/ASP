@@ -1,0 +1,27 @@
+﻿.human-container {
+	display:flex;
+	justify-content:space-between;
+}
+.human-text-fields
+{
+	width:50%;
+	/*border:solid 1px;*/
+}
+.photo-container {
+
+	width: 40%;
+/*	border: solid 1px;*/
+}
+.photo-area {
+	width: 100%;
+	height:70vh;
+	border: solid 1px;
+
+}
+img
+{
+	width:100%;
+	/*background-attachment:fixed;*/
+	/*object-fit:cover;*/
+
+}

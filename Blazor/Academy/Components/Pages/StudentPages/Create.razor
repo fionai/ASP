@@ -1,4 +1,5 @@
 @page "/students/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
 @inject IDbContextFactory<AcademyContext> DbFactory
@@ -59,13 +60,18 @@
                 <InputText id="phone" @bind-Value="Student.phone" class="form-control" /> 
                 <ValidationMessage For="() => Student.phone" class="text-danger" /> 
             </div>        
-            <SelectGroup Student="Student"/>
-          @*   <div class="mb-3">
-                <label for="photo" class="form-label">photo:</label> 
-                <InputText id="photo" @bind-Value="Student.photo" class="form-control" /> 
-                <ValidationMessage For="() => Student.photo" class="text-danger" /> 
-            </div>      *@   
-            <button type="submit" class="btn btn-primary">Create</button>
+            <div class="human-container">
+                <SelectGroup Student="Student" />
+                <div class="human-text-fields">
+                    <Photo Human="Student" AllowChange="true" />
+                    @*   <div class="mb-3">
+                    <label for="photo" class="form-label">photo:</label>
+                    <InputText id="photo" @bind-Value="Student.photo" class="form-control" />
+                    <ValidationMessage For="() => Student.photo" class="text-danger" />
+                    </div>      *@
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </div>
         </EditForm>
     </div>
 </div>
