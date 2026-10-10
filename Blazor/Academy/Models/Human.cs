@@ -30,6 +30,10 @@ namespace Academy.Models
 		public string? phone { get; set; }
 		public byte[]? photo { get; set; }
 
-
+		//Calculated properties
+		public string FullName
+		{
+			get => $"{last_name} {first_name} {middle_name}";
+		}
 	}
 }
