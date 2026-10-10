@@ -11,11 +11,11 @@
 <PageTitle>Index</PageTitle>
 
 <h1>Index</h1>
-
-<p>
-    <a href="students/create">Create New</a>
-</p>
-
+<div class="controls">
+    <p>
+        <a href="students/create" class="btn btn-primary">Добавить</a>
+    </p>
+</div>
 <QuickGrid Class="table" Items="context.Students.Include(s => s.Group).ThenInclude(g => g.Direction)">
    @*  <PropertyColumn Property="student => student.Group" /> *@
  @*    <PropertyColumn Property="student => student.last_name" />
@@ -36,9 +36,7 @@
     <PropertyColumn Property="student => student.photo" /> *@
 
     <TemplateColumn Context="student">
-        <a href="@($"students/edit?stud_id={student.stud_id}")">Edit</a> |
-        <a href="@($"students/details?stud_id={student.stud_id}")">Details</a> |
-        <a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>
+        <a href="@($"students/details?stud_id={student.stud_id}")">Details</a> 
     </TemplateColumn>
 </QuickGrid>
 
